@@ -1,0 +1,13 @@
+{
+  "name": "DeadMouse",
+  "version": "0.1",
+  "description": "Click on links without the mouse.",
+  "content_scripts": [
+  {
+    "matches": ["http://*/*", "https://*/*"],
+    "js": ["libs/zepto.min.js","build/hook.js"],
+    "css": ["style/main.css"]
+  }
+  ]
+}
+
