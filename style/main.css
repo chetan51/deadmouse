@@ -1,10 +1,10 @@
 .deadmouse-highlighted, .deadmouse-clicked {
   border-radius: 5px !important;
-  box-shadow: 0px 1px 4px #ccc !important;
+  box-shadow: 0px 1px 4px #666 !important;
 }
 
 .deadmouse-highlighted {
-  background-color: yellow !important;
+  background: -webkit-gradient(linear, left top, left bottom, from(#FFFA00), to(#DDD911)) !important;
 }  
 
 .deadmouse-highlighted, .deadmouse-highlighted * {
@@ -13,11 +13,11 @@
 }
 
 .deadmouse-focused, .deadmouse-clicked {
-  box-shadow: 0px 1px 6px #222 !important;
+  box-shadow: 0px 1px 15px #333 !important;
 }  
 
 .deadmouse-clicked {
-  background-color: #97E334 !important;
+  background: -webkit-gradient(linear, left top, left bottom, from(#A8F445), to(#97E334)) !important;
 }
 
 .deadmouse-clicked, .deadmouse-clicked * {
