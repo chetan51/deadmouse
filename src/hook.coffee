@@ -1,12 +1,12 @@
 class LinkFinder
-  visible: (links) ->
-    return (link for link in links when $(link).offset()['top'] > window.scrollY and $(link).offset()['top'] + $(link).height() < window.scrollY + $(window).height())
+  is_visible: (link) ->
+    return $(link).is(":visible") and $(link).offset()['top'] > window.scrollY and $(link).offset()['top'] + $(link).height() < window.scrollY + $(window).height()
   
   match: (search_string) ->
     needles = search_string.split("")
     regex_pattern = (".*" + needle for needle in needles).concat(".*").join("")
     regex = new RegExp(regex_pattern, "i")
-    return (link for link in $("a") when $(link).is(":visible") and regex.test(link.text))
+    return (link for link in $("a") when this.is_visible(link) and regex.test(link.text))
 
 class Application
   constructor: ->
@@ -26,25 +26,22 @@ class Application
     $(link).removeClass("deadmouse-focused") for link in links
     
   update_link_focus: ->
-    visible_links = this.link_finder.visible this.matched_links
-    $(visible_links[this.focused_link_index]).addClass("deadmouse-focused")
+    $(this.matched_links[this.focused_link_index]).addClass("deadmouse-focused")
     
-  focus_first_visible_link: ->
+  focus_first_link: ->
     this.focused_link_index = 0
     this.update_link_focus()
     
-  focus_next_visible_link: ->
-    visible_links = this.link_finder.visible this.matched_links
+  focus_next_link: ->
     this.focused_link_index += 1
-    if this.focused_link_index > visible_links.length - 1
+    if this.focused_link_index > this.matched_links.length - 1
       this.focused_link_index = 0
     this.update_link_focus()
    
-  focus_prev_visible_link: ->
-    visible_links = this.link_finder.visible this.matched_links
+  focus_prev_link: ->
     this.focused_link_index -= 1
     if this.focused_link_index < 0
-      this.focused_link_index = visible_links.length - 1
+      this.focused_link_index = this.matched_links.length - 1
     this.update_link_focus()
     
   follow_link: (link) ->
@@ -52,8 +49,7 @@ class Application
     $(link).trigger("click")
 
   follow_focused_link: ->
-    visible_links = this.link_finder.visible this.matched_links
-    this.follow_link(visible_links[this.focused_link_index])
+    this.follow_link(this.matched_links[this.focused_link_index])
     
   reset: ->
     this.unhighlight_links($("a"))
@@ -67,7 +63,7 @@ class Application
       
       this.reset()
       this.highlight_links(this.matched_links)
-      this.focus_first_visible_link()
+      this.focus_first_link()
       
       if this.matched_links.length == 1
         this.follow_link(this.matched_links[0])
@@ -89,9 +85,9 @@ class Application
       this.unfocus_links($("a"))
       
       if event.shiftKey
-        this.focus_prev_visible_link()
+        this.focus_prev_link()
       else
-        this.focus_next_visible_link()
+        this.focus_next_link()
        
       return false
     else if this.activated and event.keyCode == 13 # Enter pressed
