@@ -30,7 +30,7 @@
       _results = [];
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         link = _ref[_i];
-        if (regex.test(link.text)) {
+        if ($(link).is(":visible") && regex.test(link.text)) {
           _results.push(link);
         }
       }

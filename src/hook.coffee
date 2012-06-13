@@ -6,7 +6,7 @@ class LinkFinder
     needles = search_string.split("")
     regex_pattern = (".*" + needle for needle in needles).concat(".*").join("")
     regex = new RegExp(regex_pattern, "i")
-    return (link for link in $("a") when regex.test(link.text))
+    return (link for link in $("a") when $(link).is(":visible") and regex.test(link.text))
 
 class Application
   constructor: ->
