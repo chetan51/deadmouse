@@ -1,6 +1,6 @@
 {
   "name": "DeadMouse",
-  "version": "1.0",
+  "version": "1.1",
   "description": "Click on links without the mouse; just start typing.",
   "content_scripts": [
   {
