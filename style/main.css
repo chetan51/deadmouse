@@ -8,6 +8,10 @@
   color: #333 !important;
 }  
 
+.deadmouse-focused {
+  box-shadow: 0px 1px 6px #111 !important;
+}  
+
 .deadmouse-clicked {
   background-color: #97E334 !important;
   color: #fff !important;

@@ -1,8 +1,19 @@
 (function() {
-  var Application, Matcher, app;
-  Matcher = (function() {
-    function Matcher() {}
-    Matcher.prototype.match = function(search_string) {
+  var Application, LinkFinder, app;
+  LinkFinder = (function() {
+    function LinkFinder() {}
+    LinkFinder.prototype.visible = function(links) {
+      var link, _i, _len, _results;
+      _results = [];
+      for (_i = 0, _len = links.length; _i < _len; _i++) {
+        link = links[_i];
+        if ($(link).offset()['top'] > window.scrollY && $(link).offset()['top'] + $(link).height() < window.scrollY + $(window).height()) {
+          _results.push(link);
+        }
+      }
+      return _results;
+    };
+    LinkFinder.prototype.match = function(search_string) {
       var link, needle, needles, regex, regex_pattern, _i, _len, _ref, _results;
       needles = search_string.split("");
       regex_pattern = ((function() {
@@ -25,12 +36,12 @@
       }
       return _results;
     };
-    return Matcher;
+    return LinkFinder;
   })();
   Application = (function() {
     function Application() {
       this.search_string = "";
-      this.matcher = new Matcher();
+      this.link_finder = new LinkFinder();
     }
     Application.prototype.unhighlight_links = function(links) {
       var link, _i, _len, _results;
@@ -50,6 +61,21 @@
       }
       return _results;
     };
+    Application.prototype.unfocus_links = function(links) {
+      var link, _i, _len, _results;
+      _results = [];
+      for (_i = 0, _len = links.length; _i < _len; _i++) {
+        link = links[_i];
+        _results.push($(link).removeClass("deadmouse-focused"));
+      }
+      return _results;
+    };
+    Application.prototype.focus_first_visible_link = function(links) {
+      var visible_links;
+      console.log("whee");
+      visible_links = this.link_finder.visible(links);
+      return $(visible_links[0]).addClass("deadmouse-focused");
+    };
     Application.prototype.follow_link = function(link) {
       $(link).addClass("deadmouse-clicked");
       return $(link).trigger("click");
@@ -58,9 +84,11 @@
       var matches;
       if (document.activeElement === document.body) {
         this.search_string += String.fromCharCode(event.keyCode);
-        matches = this.matcher.match(this.search_string);
+        matches = this.link_finder.match(this.search_string);
         this.unhighlight_links($("a"));
         this.highlight_links(matches);
+        this.unfocus_links(matches);
+        this.focus_first_visible_link(matches);
         if (matches.length === 1) {
           this.follow_link(matches[0]);
         }
@@ -73,6 +101,7 @@
       if (event.keyCode === 27) {
         this.search_string = "";
         this.unhighlight_links($("a"));
+        this.unfocus_links($("a"));
         return false;
       }
     };
