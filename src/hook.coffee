@@ -1,27 +1,3 @@
-# fuzzy algorithm
-# TODO : weight differently occurences depending if they 
-#        are in domain, path or even GET parameters
-fuzzy = (tabs, hint)-> 
-  results = [] 
-  return tabs if hint == ''
-  
-  for tab in tabs 
-    matches = []
-    
-    # Set offset to the first letter of the domain, ignoring procotol 
-    offset = tab.url.indexOf '/'
-
-    for i in [0..hint.length-1]
-      for j in [offset..tab.url.length-1] 
-        if hint.charAt(i) == tab.url.charAt(j)
-          offset = j
-          matches.push offset
-          break
-      break if j == tab.url.length - 1 and j != offset
-    results.push {tab:tab, matches:matches} if matches.length == hint.length
-
-  results 
-
 class Matcher
   match: (search_string) ->
     needles = search_string.split("")

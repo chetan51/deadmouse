@@ -1,36 +1,5 @@
 (function() {
-  var Application, Matcher, app, fuzzy;
-  fuzzy = function(tabs, hint) {
-    var i, j, matches, offset, results, tab, _i, _len, _ref, _ref2;
-    results = [];
-    if (hint === '') {
-      return tabs;
-    }
-    for (_i = 0, _len = tabs.length; _i < _len; _i++) {
-      tab = tabs[_i];
-      matches = [];
-      offset = tab.url.indexOf('/');
-      for (i = 0, _ref = hint.length - 1; (0 <= _ref ? i <= _ref : i >= _ref); (0 <= _ref ? i += 1 : i -= 1)) {
-        for (j = offset, _ref2 = tab.url.length - 1; (offset <= _ref2 ? j <= _ref2 : j >= _ref2); (offset <= _ref2 ? j += 1 : j -= 1)) {
-          if (hint.charAt(i) === tab.url.charAt(j)) {
-            offset = j;
-            matches.push(offset);
-            break;
-          }
-        }
-        if (j === tab.url.length - 1 && j !== offset) {
-          break;
-        }
-      }
-      if (matches.length === hint.length) {
-        results.push({
-          tab: tab,
-          matches: matches
-        });
-      }
-    }
-    return results;
-  };
+  var Application, Matcher, app;
   Matcher = (function() {
     function Matcher() {}
     Matcher.prototype.match = function(search_string) {
