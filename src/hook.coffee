@@ -45,13 +45,16 @@ class Application
     $(link).trigger("click")
 
   keypress: (event) ->
-    this.search_string += String.fromCharCode(event.keyCode)
-    matches = this.matcher.match(this.search_string)
-    this.unhighlight_links($("a"))
-    this.highlight_links(matches)
-    if matches.length == 1
-      this.follow_link(matches[0])
-    return false
+    if document.activeElement == document.body # no input is focused
+      this.search_string += String.fromCharCode(event.keyCode)
+      matches = this.matcher.match(this.search_string)
+      this.unhighlight_links($("a"))
+      this.highlight_links(matches)
+      if matches.length == 1
+        this.follow_link(matches[0])
+      return false
+    else
+      return true
   
   keydown: (event) ->
     if event.keyCode == 27 # Esc pressed
@@ -61,8 +64,8 @@ class Application
 
 app = new Application()
 
-$(document).on "keypress", (e) ->
+$(window).on "keypress", (e) ->
   return app.keypress(event)
 
-$(document).on "keydown", (e) ->
+$(window).on "keydown", (e) ->
   return app.keydown(event)

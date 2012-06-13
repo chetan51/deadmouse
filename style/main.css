@@ -5,9 +5,10 @@
 
 .deadmouse-highlighted {
   background-color: yellow !important;
+  color: #333 !important;
 }  
 
 .deadmouse-clicked {
   background-color: #7FAF1B !important;
-  color: white !important;
+  color: #ccc !important;
 }

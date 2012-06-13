@@ -87,14 +87,18 @@
     };
     Application.prototype.keypress = function(event) {
       var matches;
-      this.search_string += String.fromCharCode(event.keyCode);
-      matches = this.matcher.match(this.search_string);
-      this.unhighlight_links($("a"));
-      this.highlight_links(matches);
-      if (matches.length === 1) {
-        this.follow_link(matches[0]);
+      if (document.activeElement === document.body) {
+        this.search_string += String.fromCharCode(event.keyCode);
+        matches = this.matcher.match(this.search_string);
+        this.unhighlight_links($("a"));
+        this.highlight_links(matches);
+        if (matches.length === 1) {
+          this.follow_link(matches[0]);
+        }
+        return false;
+      } else {
+        return true;
       }
-      return false;
     };
     Application.prototype.keydown = function(event) {
       if (event.keyCode === 27) {
@@ -106,10 +110,10 @@
     return Application;
   })();
   app = new Application();
-  $(document).on("keypress", function(e) {
+  $(window).on("keypress", function(e) {
     return app.keypress(event);
   });
-  $(document).on("keydown", function(e) {
+  $(window).on("keydown", function(e) {
     return app.keydown(event);
   });
 }).call(this);
