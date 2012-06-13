@@ -1,7 +1,7 @@
 {
   "name": "DeadMouse",
   "version": "1.3",
-  "description": "Click on links without the mouse; just start typing.",
+  "description": "Ditch your mouse. Surf the web with just your keyboard.",
   "content_scripts": [
   {
     "matches": ["http://*/*", "https://*/*"],
