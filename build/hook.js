@@ -88,7 +88,7 @@
         matches = this.link_finder.match(this.search_string);
         this.unhighlight_links($("a"));
         this.highlight_links(matches);
-        this.unfocus_links(matches);
+        this.unfocus_links($("a"));
         this.focus_first_visible_link(matches);
         if (matches.length === 1) {
           this.follow_link(matches[0]);

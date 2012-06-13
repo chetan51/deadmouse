@@ -36,10 +36,13 @@ class Application
       this.activated = true
       this.search_string += String.fromCharCode(event.keyCode)
       matches = this.link_finder.match(this.search_string)
+      
       this.unhighlight_links($("a"))
       this.highlight_links(matches)
-      this.unfocus_links(matches)
+      
+      this.unfocus_links($("a"))
       this.focus_first_visible_link(matches)
+      
       if matches.length == 1
         this.follow_link(matches[0])
       return false
@@ -50,14 +53,17 @@ class Application
     if event.keyCode == 27 # Esc pressed
       this.activated = false
       this.search_string = ""
+      
       this.unhighlight_links $("a")
       this.unfocus_links($("a"))
+      
       return false
     else if this.activated and event.keyCode == 9 # Tab pressed
       if event.shiftKey
         console.log "shift+tab"
       else
         console.log "tab"
+       
       return false
 
 app = new Application()
