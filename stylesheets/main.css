@@ -1,0 +1,18 @@
+.deadmouse-highlighted, .deadmouse-clicked {
+  border-radius: 5px !important;
+  box-shadow: 0px 1px 4px #ccc !important;
+}
+
+.deadmouse-highlighted {
+  background-color: yellow !important;
+  color: #333 !important;
+}  
+
+.deadmouse-focused, .deadmouse-clicked {
+  box-shadow: 0px 1px 6px #222 !important;
+}  
+
+.deadmouse-clicked {
+  background-color: #97E334 !important;
+  color: #fff !important;
+}
