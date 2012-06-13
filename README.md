@@ -2,11 +2,7 @@
 
 Ditch your mouse. Surf the web with just your keyboard.
 
-Try it out [here](http://chetan51.github.com/deadmouse/).
-
-## Installation
-
-Get the `deadmouse.crx` package from the Downloads section.
+Try it out and get it [here](http://chetan51.github.com/deadmouse/).
 
 ## Usage
 
