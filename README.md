@@ -1,6 +1,6 @@
 # DeadMouse 
 
-Click on links without the mouse; just start typing. A Google Chrome extension.
+Ditch your mouse. Surf the web with just your keyboard.
 
 Try it out [here](http://chetan51.github.com/deadmouse/).
 
