@@ -17,7 +17,7 @@ class Application
     this.link_finder = new LinkFinder()
     
   unhighlight_links: (links) ->
-    $(link).removeClass("deadmouse-highlighted") for link in links
+    $(link).removeClass("deadmouse-highlighted").removeClass("deadmouse-clicked") for link in links
     
   highlight_links: (links) ->
     $(link).addClass("deadmouse-highlighted") for link in links

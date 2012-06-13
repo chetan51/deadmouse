@@ -43,7 +43,7 @@
       _results = [];
       for (_i = 0, _len = links.length; _i < _len; _i++) {
         link = links[_i];
-        _results.push($(link).removeClass("deadmouse-highlighted"));
+        _results.push($(link).removeClass("deadmouse-highlighted").removeClass("deadmouse-clicked"));
       }
       return _results;
     };
