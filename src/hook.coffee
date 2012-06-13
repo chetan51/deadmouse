@@ -12,6 +12,8 @@ class Application
   constructor: ->
     this.activated = false
     this.search_string = ""
+    this.matched_links = []
+    this.focused_link_index = 0
     this.link_finder = new LinkFinder()
     
   unhighlight_links: (links) ->
@@ -23,28 +25,52 @@ class Application
   unfocus_links: (links) ->
     $(link).removeClass("deadmouse-focused") for link in links
     
-  focus_first_visible_link: (links) ->
-    visible_links = this.link_finder.visible links
-    $(visible_links[0]).addClass("deadmouse-focused")
+  update_link_focus: ->
+    visible_links = this.link_finder.visible this.matched_links
+    $(visible_links[this.focused_link_index]).addClass("deadmouse-focused")
+    
+  focus_first_visible_link: ->
+    this.focused_link_index = 0
+    this.update_link_focus()
+    
+  focus_next_visible_link: ->
+    visible_links = this.link_finder.visible this.matched_links
+    this.focused_link_index += 1
+    if this.focused_link_index > visible_links.length - 1
+      this.focused_link_index = 0
+    this.update_link_focus()
    
+  focus_prev_visible_link: ->
+    visible_links = this.link_finder.visible this.matched_links
+    this.focused_link_index -= 1
+    if this.focused_link_index < 0
+      this.focused_link_index = visible_links.length - 1
+    this.update_link_focus()
+    
   follow_link: (link) ->
     $(link).addClass("deadmouse-clicked")
     $(link).trigger("click")
+
+  follow_focused_link: ->
+    visible_links = this.link_finder.visible this.matched_links
+    this.follow_link(visible_links[this.focused_link_index])
+    
+  reset: ->
+    this.unhighlight_links($("a"))
+    this.unfocus_links($("a"))
 
   keypress: (event) ->
     if document.activeElement == document.body # no input is focused
       this.activated = true
       this.search_string += String.fromCharCode(event.keyCode)
-      matches = this.link_finder.match(this.search_string)
+      this.matched_links = this.link_finder.match(this.search_string)
       
-      this.unhighlight_links($("a"))
-      this.highlight_links(matches)
+      this.reset()
+      this.highlight_links(this.matched_links)
+      this.focus_first_visible_link()
       
-      this.unfocus_links($("a"))
-      this.focus_first_visible_link(matches)
-      
-      if matches.length == 1
-        this.follow_link(matches[0])
+      if this.matched_links.length == 1
+        this.follow_link(this.matched_links[0])
       return false
     else
       return true
@@ -53,17 +79,24 @@ class Application
     if event.keyCode == 27 # Esc pressed
       this.activated = false
       this.search_string = ""
+      this.matched_links = []
+      this.focused_link_index = 0
       
-      this.unhighlight_links $("a")
-      this.unfocus_links($("a"))
+      this.reset()
       
       return false
     else if this.activated and event.keyCode == 9 # Tab pressed
+      this.unfocus_links($("a"))
+      
       if event.shiftKey
-        console.log "shift+tab"
+        this.focus_prev_visible_link()
       else
-        console.log "tab"
+        this.focus_next_visible_link()
        
+      return false
+    else if this.activated and event.keyCode == 13 # Enter pressed
+      this.reset()
+      this.follow_focused_link()
       return false
 
 app = new Application()

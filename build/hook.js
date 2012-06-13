@@ -42,6 +42,8 @@
     function Application() {
       this.activated = false;
       this.search_string = "";
+      this.matched_links = [];
+      this.focused_link_index = 0;
       this.link_finder = new LinkFinder();
     }
     Application.prototype.unhighlight_links = function(links) {
@@ -71,27 +73,56 @@
       }
       return _results;
     };
-    Application.prototype.focus_first_visible_link = function(links) {
+    Application.prototype.update_link_focus = function() {
       var visible_links;
-      visible_links = this.link_finder.visible(links);
-      return $(visible_links[0]).addClass("deadmouse-focused");
+      visible_links = this.link_finder.visible(this.matched_links);
+      return $(visible_links[this.focused_link_index]).addClass("deadmouse-focused");
+    };
+    Application.prototype.focus_first_visible_link = function() {
+      this.focused_link_index = 0;
+      return this.update_link_focus();
+    };
+    Application.prototype.focus_next_visible_link = function() {
+      var visible_links;
+      visible_links = this.link_finder.visible(this.matched_links);
+      this.focused_link_index += 1;
+      if (this.focused_link_index > visible_links.length - 1) {
+        this.focused_link_index = 0;
+      }
+      return this.update_link_focus();
+    };
+    Application.prototype.focus_prev_visible_link = function() {
+      var visible_links;
+      visible_links = this.link_finder.visible(this.matched_links);
+      this.focused_link_index -= 1;
+      if (this.focused_link_index < 0) {
+        this.focused_link_index = visible_links.length - 1;
+      }
+      return this.update_link_focus();
     };
     Application.prototype.follow_link = function(link) {
       $(link).addClass("deadmouse-clicked");
       return $(link).trigger("click");
     };
+    Application.prototype.follow_focused_link = function() {
+      var visible_links;
+      visible_links = this.link_finder.visible(this.matched_links);
+      return this.follow_link(visible_links[this.focused_link_index]);
+    };
+    Application.prototype.reset = function() {
+      this.unhighlight_links($("a"));
+      return this.unfocus_links($("a"));
+    };
     Application.prototype.keypress = function(event) {
-      var matches;
       if (document.activeElement === document.body) {
         this.activated = true;
         this.search_string += String.fromCharCode(event.keyCode);
-        matches = this.link_finder.match(this.search_string);
-        this.unhighlight_links($("a"));
-        this.highlight_links(matches);
-        this.unfocus_links($("a"));
-        this.focus_first_visible_link(matches);
-        if (matches.length === 1) {
-          this.follow_link(matches[0]);
+        this.matched_links = this.link_finder.match(this.search_string);
+        this.reset();
+        this.highlight_links(this.matched_links);
+        this.focus_first_visible_link();
+        if (this.matched_links.length === 1) {
+          this.follow_link(this.matched_links[0]);
         }
         return false;
       } else {
@@ -102,15 +133,21 @@
       if (event.keyCode === 27) {
         this.activated = false;
         this.search_string = "";
-        this.unhighlight_links($("a"));
-        this.unfocus_links($("a"));
+        this.matched_links = [];
+        this.focused_link_index = 0;
+        this.reset();
         return false;
       } else if (this.activated && event.keyCode === 9) {
+        this.unfocus_links($("a"));
         if (event.shiftKey) {
-          console.log("shift+tab");
+          this.focus_prev_visible_link();
         } else {
-          console.log("tab");
+          this.focus_next_visible_link();
         }
+        return false;
+      } else if (this.activated && event.keyCode === 13) {
+        this.reset();
+        this.follow_focused_link();
         return false;
       }
     };
