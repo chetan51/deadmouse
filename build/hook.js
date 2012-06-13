@@ -40,6 +40,7 @@
   })();
   Application = (function() {
     function Application() {
+      this.activated = false;
       this.search_string = "";
       this.link_finder = new LinkFinder();
     }
@@ -72,7 +73,6 @@
     };
     Application.prototype.focus_first_visible_link = function(links) {
       var visible_links;
-      console.log("whee");
       visible_links = this.link_finder.visible(links);
       return $(visible_links[0]).addClass("deadmouse-focused");
     };
@@ -83,6 +83,7 @@
     Application.prototype.keypress = function(event) {
       var matches;
       if (document.activeElement === document.body) {
+        this.activated = true;
         this.search_string += String.fromCharCode(event.keyCode);
         matches = this.link_finder.match(this.search_string);
         this.unhighlight_links($("a"));
@@ -99,9 +100,17 @@
     };
     Application.prototype.keydown = function(event) {
       if (event.keyCode === 27) {
+        this.activated = false;
         this.search_string = "";
         this.unhighlight_links($("a"));
         this.unfocus_links($("a"));
+        return false;
+      } else if (this.activated && event.keyCode === 9) {
+        if (event.shiftKey) {
+          console.log("shift+tab");
+        } else {
+          console.log("tab");
+        }
         return false;
       }
     };

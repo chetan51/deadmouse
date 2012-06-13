@@ -10,6 +10,7 @@ class LinkFinder
 
 class Application
   constructor: ->
+    this.activated = false
     this.search_string = ""
     this.link_finder = new LinkFinder()
     
@@ -23,7 +24,6 @@ class Application
     $(link).removeClass("deadmouse-focused") for link in links
     
   focus_first_visible_link: (links) ->
-    console.log "whee"
     visible_links = this.link_finder.visible links
     $(visible_links[0]).addClass("deadmouse-focused")
    
@@ -33,6 +33,7 @@ class Application
 
   keypress: (event) ->
     if document.activeElement == document.body # no input is focused
+      this.activated = true
       this.search_string += String.fromCharCode(event.keyCode)
       matches = this.link_finder.match(this.search_string)
       this.unhighlight_links($("a"))
@@ -47,9 +48,16 @@ class Application
   
   keydown: (event) ->
     if event.keyCode == 27 # Esc pressed
+      this.activated = false
       this.search_string = ""
       this.unhighlight_links $("a")
       this.unfocus_links($("a"))
+      return false
+    else if this.activated and event.keyCode == 9 # Tab pressed
+      if event.shiftKey
+        console.log "shift+tab"
+      else
+        console.log "tab"
       return false
 
 app = new Application()
