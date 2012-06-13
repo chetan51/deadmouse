@@ -2,6 +2,8 @@
 
 Click on links without the mouse; just start typing. A Google Chrome extension.
 
+Try it out [here](http://chetan51.github.com/deadmouse/).
+
 ## Installation
 
 Get the `deadmouse.crx` package from the Downloads section.
