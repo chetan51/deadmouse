@@ -10,11 +10,14 @@ class LinkFinder
 
 class Application
   constructor: ->
+    this.reset()
+    this.link_finder = new LinkFinder()
+
+  reset: ->
     this.activated = false
     this.search_string = ""
     this.matched_links = []
     this.focused_link_index = 0
-    this.link_finder = new LinkFinder()
     
   unhighlight_links: (links) ->
     $(link).removeClass("deadmouse-highlighted").removeClass("deadmouse-clicked") for link in links
@@ -51,7 +54,7 @@ class Application
   follow_focused_link: ->
     this.follow_link(this.matched_links[this.focused_link_index])
     
-  reset: ->
+  clear: ->
     this.unhighlight_links($("a"))
     this.unfocus_links($("a"))
 
@@ -61,7 +64,7 @@ class Application
       this.search_string += String.fromCharCode(event.keyCode)
       this.matched_links = this.link_finder.match(this.search_string)
       
-      this.reset()
+      this.clear()
       this.highlight_links(this.matched_links)
       this.focus_first_link()
       
@@ -78,6 +81,7 @@ class Application
       this.matched_links = []
       this.focused_link_index = 0
       
+      this.clear()
       this.reset()
       
       return false
@@ -91,8 +95,9 @@ class Application
        
       return false
     else if this.activated and event.keyCode == 13 # Enter pressed
-      this.reset()
+      this.clear()
       this.follow_focused_link()
+      this.reset()
       return false
 
 app = new Application()

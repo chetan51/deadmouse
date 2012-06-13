@@ -32,12 +32,15 @@
   })();
   Application = (function() {
     function Application() {
+      this.reset();
+      this.link_finder = new LinkFinder();
+    }
+    Application.prototype.reset = function() {
       this.activated = false;
       this.search_string = "";
       this.matched_links = [];
-      this.focused_link_index = 0;
-      this.link_finder = new LinkFinder();
-    }
+      return this.focused_link_index = 0;
+    };
     Application.prototype.unhighlight_links = function(links) {
       var link, _i, _len, _results;
       _results = [];
@@ -93,7 +96,7 @@
     Application.prototype.follow_focused_link = function() {
       return this.follow_link(this.matched_links[this.focused_link_index]);
     };
-    Application.prototype.reset = function() {
+    Application.prototype.clear = function() {
       this.unhighlight_links($("a"));
       return this.unfocus_links($("a"));
     };
@@ -102,7 +105,7 @@
         this.activated = true;
         this.search_string += String.fromCharCode(event.keyCode);
         this.matched_links = this.link_finder.match(this.search_string);
-        this.reset();
+        this.clear();
         this.highlight_links(this.matched_links);
         this.focus_first_link();
         if (this.matched_links.length === 1) {
@@ -119,6 +122,7 @@
         this.search_string = "";
         this.matched_links = [];
         this.focused_link_index = 0;
+        this.clear();
         this.reset();
         return false;
       } else if (this.activated && event.keyCode === 9) {
@@ -130,8 +134,9 @@
         }
         return false;
       } else if (this.activated && event.keyCode === 13) {
-        this.reset();
+        this.clear();
         this.follow_focused_link();
+        this.reset();
         return false;
       }
     };
