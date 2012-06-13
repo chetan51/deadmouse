@@ -2,7 +2,11 @@
 
 Click on links without the mouse; just start typing. A Google Chrome extension.
 
-# Usage
+## Installation
+
+Get the `deadmouse.crx` package from the Downloads section.
+
+## Usage
 
 1. Clone the repo
 2. Run `cake watch`
