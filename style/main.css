@@ -1,21 +1,21 @@
 .deadmouse-focused {
   display: inline-block;
-  -webkit-animation: wiggle 0.5s infinite;
+  -webkit-animation: wiggle 0.4s infinite;
 }
 
 .deadmouse-clicked {
   position: relative;
-  -webkit-animation: bounce 0.5s infinite;
+  -webkit-animation: bounce 0.3s ease infinite alternate backwards;
 }
 
 @-webkit-keyframes wiggle {
-  0% {-webkit-transform:rotate(4deg);}
-  50% {-webkit-transform:rotate(-4deg);}
-  100% {-webkit-transform:rotate(4deg);}
+  0% {-webkit-transform:rotate(0deg);}
+  20% {-webkit-transform:rotate(4deg);}
+  70% {-webkit-transform:rotate(-4deg);}
+  100% {-webkit-transform:rotate(0deg);}
 }
 
 @-webkit-keyframes bounce {
   0%   { top: 0px;  }
-  50%  { top: -3px; }
-  100% { top: 0px;  }
+  100%  { top: -5px; }
 }
