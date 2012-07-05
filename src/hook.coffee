@@ -7,10 +7,29 @@ class LinkFinder
     links = (tuple[0] for tuple in scores)
     return (link for link in links when this.is_visible(link))
 
+class DomUtils
+  constructor: ->
+    if (navigator.userAgent.indexOf("Mac") != -1)
+      @platform = "Mac"
+    else if (navigator.userAgent.indexOf("Linux") != -1)
+      @platform = "Linux"
+    else
+      @platform = "Windows"
+
+  simulateClick: (element, modifiers) ->
+    modifiers ||= {}
+
+    eventSequence = ["mouseover", "mousedown", "mouseup", "click"]
+    for event in eventSequence
+      mouseEvent = document.createEvent("MouseEvents")
+      mouseEvent.initMouseEvent(event, true, true, window, 1, 0, 0, 0, 0, modifiers.ctrlKey, false, false, modifiers.metaKey, 0, null)
+      element.dispatchEvent(mouseEvent)
+
 class Application
   constructor: ->
     this.reset()
     this.link_finder = new LinkFinder()
+    this.dom_utils   = new DomUtils()
 
   reset: ->
     this.activated = false
@@ -19,7 +38,6 @@ class Application
     this.focused_link_index = 0
     
   unfocus_links: (links) ->
-    $(link).removeClass("deadmouse-focused") for link in links
     
   update_link_focus: ->
     $(this.matched_links[this.focused_link_index]).addClass("deadmouse-focused")
@@ -40,15 +58,21 @@ class Application
       this.focused_link_index = this.matched_links.length - 1
     this.update_link_focus()
     
-  follow_link: (link) ->
-    $(link).addClass("deadmouse-clicked")
-    $(link).trigger("click")
+  follow_link: (link, new_window) ->
+    if new_window
+      modifiers =
+        metaKey: this.dom_utils.platform == "Mac"
+        ctrlKey: this.dom_utils.platform != "Mac"
+    else
+      $(link).addClass("deadmouse-clicked")
+    this.dom_utils.simulateClick(link, modifiers)
 
-  follow_focused_link: ->
-    this.follow_link(this.matched_links[this.focused_link_index])
+  follow_focused_link: (new_window) ->
+    this.follow_link(this.matched_links[this.focused_link_index], new_window)
     
   clear: ->
-    this.unfocus_links($("a"))
+    $(link).removeClass("deadmouse-focused") for link in $("a")
+    $(link).removeClass("deadmouse-clicked") for link in $("a")
 
   keypress: (event) ->
     if document.activeElement == document.body # no input is focused
@@ -75,7 +99,7 @@ class Application
       
       return false
     else if this.activated and event.keyCode == 9 # Tab pressed
-      this.unfocus_links($("a"))
+      this.clear()
       
       if event.shiftKey
         this.focus_prev_link()
@@ -85,7 +109,12 @@ class Application
       return false
     else if this.activated and event.keyCode == 13 # Enter pressed
       this.clear()
-      this.follow_focused_link()
+
+      if event.shiftKey
+        this.follow_focused_link(true)
+      else
+        this.follow_focused_link(false)
+
       this.reset()
       return false
 
