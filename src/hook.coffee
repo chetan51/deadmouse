@@ -3,10 +3,9 @@ class LinkFinder
     return $(link).is(":visible") and $(link).offset()['top'] > window.scrollY and $(link).offset()['top'] + $(link).height() < window.scrollY + $(window).height()
   
   match: (search_string) ->
-    needles = search_string.split("")
-    regex_pattern = (".*" + needle for needle in needles).concat(".*").join("")
-    regex = new RegExp(regex_pattern, "i")
-    return (link for link in $("a") when this.is_visible(link) and regex.test(link.text))
+    scores = ([link, link.text.score(search_string)] for link in $("a")).sort((a, b) -> b[1] - a[1])
+    links = (tuple[0] for tuple in scores)
+    return (link for link in links when this.is_visible(link))
 
 class Application
   constructor: ->

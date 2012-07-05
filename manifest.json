@@ -8,7 +8,7 @@
   "content_scripts": [
   {
     "matches": ["http://*/*", "https://*/*"],
-    "js": ["libs/zepto.min.js","build/hook.js"],
+    "js": ["libs/zepto.min.js","build/string_score.js", "build/hook.js"],
     "css": ["style/main.css"]
   }
   ]
