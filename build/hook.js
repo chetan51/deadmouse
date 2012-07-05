@@ -64,26 +64,6 @@
       return this.focused_link_index = 0;
     };
 
-    Application.prototype.unhighlight_links = function(links) {
-      var link, _i, _len, _results;
-      _results = [];
-      for (_i = 0, _len = links.length; _i < _len; _i++) {
-        link = links[_i];
-        _results.push($(link).removeClass("deadmouse-highlighted").removeClass("deadmouse-clicked"));
-      }
-      return _results;
-    };
-
-    Application.prototype.highlight_links = function(links) {
-      var link, _i, _len, _results;
-      _results = [];
-      for (_i = 0, _len = links.length; _i < _len; _i++) {
-        link = links[_i];
-        _results.push($(link).addClass("deadmouse-highlighted"));
-      }
-      return _results;
-    };
-
     Application.prototype.unfocus_links = function(links) {
       var link, _i, _len, _results;
       _results = [];
@@ -129,7 +109,6 @@
     };
 
     Application.prototype.clear = function() {
-      this.unhighlight_links($("a"));
       return this.unfocus_links($("a"));
     };
 
@@ -139,7 +118,6 @@
         this.search_string += String.fromCharCode(event.keyCode);
         this.matched_links = this.link_finder.match(this.search_string);
         this.clear();
-        this.highlight_links(this.matched_links);
         this.focus_first_link();
         if (this.matched_links.length === 1) {
           this.follow_link(this.matched_links[0]);

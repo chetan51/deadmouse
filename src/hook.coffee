@@ -18,12 +18,6 @@ class Application
     this.matched_links = []
     this.focused_link_index = 0
     
-  unhighlight_links: (links) ->
-    $(link).removeClass("deadmouse-highlighted").removeClass("deadmouse-clicked") for link in links
-    
-  highlight_links: (links) ->
-    $(link).addClass("deadmouse-highlighted") for link in links
-    
   unfocus_links: (links) ->
     $(link).removeClass("deadmouse-focused") for link in links
     
@@ -54,7 +48,6 @@ class Application
     this.follow_link(this.matched_links[this.focused_link_index])
     
   clear: ->
-    this.unhighlight_links($("a"))
     this.unfocus_links($("a"))
 
   keypress: (event) ->
@@ -64,7 +57,6 @@ class Application
       this.matched_links = this.link_finder.match(this.search_string)
       
       this.clear()
-      this.highlight_links(this.matched_links)
       this.focus_first_link()
       
       if this.matched_links.length == 1
