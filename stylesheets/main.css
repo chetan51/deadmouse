@@ -1,27 +1,21 @@
-.deadmouse-highlighted, .deadmouse-clicked {
-  border-radius: 5px !important;
-  box-shadow: 0px 1px 4px #666 !important;
-}
-
-.deadmouse-highlighted {
-  background: -webkit-gradient(linear, left top, left bottom, from(#FFFA00), to(#DDD911)) !important;
-}  
-
-.deadmouse-highlighted, .deadmouse-highlighted * {
-  color: #333 !important;
-  text-shadow: none;
-}
-
 .deadmouse-focused {
-  box-shadow: 0px 1px 15px #333 !important;
-}  
+  display: inline-block;
+  -webkit-animation: wiggle 0.4s infinite;
+}
 
 .deadmouse-clicked {
-  background: -webkit-gradient(linear, left top, left bottom, from(#A8F445), to(#97E334)) !important;
-  box-shadow: 0px 1px 15px #666 !important;
+  position: relative;
+  -webkit-animation: bounce 0.3s ease infinite alternate backwards;
 }
 
-.deadmouse-clicked, .deadmouse-clicked * {
-  color: #fff !important;
-  text-shadow: none;
+@-webkit-keyframes wiggle {
+  0% {-webkit-transform:rotate(0deg);}
+  20% {-webkit-transform:rotate(4deg);}
+  70% {-webkit-transform:rotate(-4deg);}
+  100% {-webkit-transform:rotate(0deg);}
+}
+
+@-webkit-keyframes bounce {
+  0%   { top: 0px;  }
+  100%  { top: -5px; }
 }
