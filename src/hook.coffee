@@ -59,8 +59,6 @@ class Application
       this.clear()
       this.focus_first_link()
       
-      if this.matched_links.length == 1
-        this.follow_link(this.matched_links[0])
       return false
     else
       return true
