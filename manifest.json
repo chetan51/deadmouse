@@ -1,6 +1,6 @@
 {
   "name": "DeadMouse",
-  "version": "1.4",
+  "version": "1.5",
   "description": "Ditch your mouse. Surf the web with just your keyboard.",
   "icons": { "16": "images/icon16.png",
              "48": "images/icon48.png",
