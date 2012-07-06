@@ -160,11 +160,12 @@ header ul a {
   font-size: 11px;
   color: #fff;
   color: rgba(255, 255, 255, 0.8);
-  display: block;
+  display: inline-block;
   text-align: center;
   font-weight: 400;
   padding-top: 6px;
   height: 32px;
+  width: 100%;
   text-shadow: rgba(0, 0, 0, 0.4) 0 -1px 0;
 }
 header ul a strong {
