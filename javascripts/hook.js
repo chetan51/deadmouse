@@ -29,7 +29,9 @@
         _results = [];
         for (_i = 0, _len = scores.length; _i < _len; _i++) {
           tuple = scores[_i];
-          _results.push(tuple[0]);
+          if (tuple[1] > 0) {
+            _results.push(tuple[0]);
+          }
         }
         return _results;
       })();
@@ -156,12 +158,18 @@
     };
 
     Application.prototype.keypress = function(event) {
-      if (document.activeElement === document.body) {
+      if (!this.activated && event.keyCode === 32) {
+        return true;
+      } else if (document.activeElement === document.body) {
         this.activated = true;
         this.search_string += String.fromCharCode(event.keyCode);
         this.matched_links = this.link_finder.match(this.search_string);
         this.clear();
-        this.focus_first_link();
+        if (this.matched_links.length > 0) {
+          this.focus_first_link();
+        } else {
+          this.reset();
+        }
         return false;
       } else {
         return true;
@@ -169,11 +177,7 @@
     };
 
     Application.prototype.keydown = function(event) {
-      if (event.keyCode === 27) {
-        this.activated = false;
-        this.search_string = "";
-        this.matched_links = [];
-        this.focused_link_index = 0;
+      if (event.keyCode === 27 || event.keyCode === 8) {
         this.clear();
         this.reset();
         return false;
