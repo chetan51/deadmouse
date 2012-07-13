@@ -171,7 +171,7 @@
     };
 
     Application.prototype.keydown = function(event) {
-      if (event.keyCode === 27) {
+      if (event.keyCode === 27 || event.keyCode === 8) {
         this.activated = false;
         this.search_string = "";
         this.matched_links = [];

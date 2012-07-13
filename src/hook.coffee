@@ -90,7 +90,7 @@ class Application
       return true
   
   keydown: (event) ->
-    if event.keyCode == 27 # Esc pressed
+    if event.keyCode == 27 or event.keyCode == 8 # Esc or Backspace pressed
       this.activated = false
       this.search_string = ""
       this.matched_links = []
