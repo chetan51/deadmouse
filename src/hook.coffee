@@ -94,7 +94,7 @@ class Application
       return true
   
   keydown: (event) ->
-    if event.keyCode == 27 or event.keyCode == 8 # Esc or Backspace pressed
+    if event.keyCode == 27 or event.keyCode == 8 and this.activated # Esc or Backspace pressed
       this.clear()
       this.reset()
       
