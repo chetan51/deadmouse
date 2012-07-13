@@ -4,7 +4,7 @@ class LinkFinder
   
   match: (search_string) ->
     scores = ([link, link.text.score(search_string)] for link in $("a")).sort((a, b) -> b[1] - a[1])
-    links = (tuple[0] for tuple in scores)
+    links = (tuple[0] for tuple in scores when tuple[1] > 0)
     return (link for link in links when this.is_visible(link))
 
 class DomUtils
@@ -81,9 +81,13 @@ class Application
       this.activated = true
       this.search_string += String.fromCharCode(event.keyCode)
       this.matched_links = this.link_finder.match(this.search_string)
-      
+
       this.clear()
-      this.focus_first_link()
+        
+      if this.matched_links.length > 0
+        this.focus_first_link()
+      else
+        this.reset()
       
       return false
     else
@@ -91,11 +95,6 @@ class Application
   
   keydown: (event) ->
     if event.keyCode == 27 or event.keyCode == 8 # Esc or Backspace pressed
-      this.activated = false
-      this.search_string = ""
-      this.matched_links = []
-      this.focused_link_index = 0
-      
       this.clear()
       this.reset()
       
