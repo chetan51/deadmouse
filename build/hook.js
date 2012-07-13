@@ -156,7 +156,9 @@
     };
 
     Application.prototype.keypress = function(event) {
-      if (document.activeElement === document.body) {
+      if (!this.activated && event.keyCode === 32) {
+        return true;
+      } else if (document.activeElement === document.body) {
         this.activated = true;
         this.search_string += String.fromCharCode(event.keyCode);
         this.matched_links = this.link_finder.match(this.search_string);

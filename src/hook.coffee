@@ -75,7 +75,9 @@ class Application
     $(link).removeClass("deadmouse-clicked") for link in $("a")
 
   keypress: (event) ->
-    if document.activeElement == document.body # no input is focused
+    if not this.activated and event.keyCode == 32 # Space pressed first
+      return true
+    else if document.activeElement == document.body # no input is focused
       this.activated = true
       this.search_string += String.fromCharCode(event.keyCode)
       this.matched_links = this.link_finder.match(this.search_string)
