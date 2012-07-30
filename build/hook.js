@@ -123,18 +123,13 @@
       return this.update_link_focus();
     };
 
-    Application.prototype.follow_focused_link = function(ctrlOrMetaPressed, shiftPressed) {
+    Application.prototype.follow_focused_link = function(ctrlPressed, metaPressed, shiftPressed) {
       var modifiers;
-      modifiers = {};
-      if (ctrlOrMetaPressed) {
-        modifiers = {
-          metaKey: this.dom_utils.platform === "Mac",
-          ctrlKey: this.dom_utils.platform !== "Mac"
-        };
-      }
-      if (shiftPressed) {
-        modifiers.shiftKey = true;
-      }
+      modifiers = {
+        ctrlKey: ctrlPressed,
+        metaKey: metaPressed,
+        shiftKey: shiftPressed
+      };
       return this.dom_utils.simulateClick(this.matched_links[this.focused_link_index], modifiers);
     };
 
@@ -188,7 +183,7 @@
         return false;
       } else if (this.activated && event.keyCode === 13) {
         this.clear();
-        this.follow_focused_link(event.ctrlKey || event.metaKey, event.shiftKey);
+        this.follow_focused_link(event.ctrlKey, event.metaKey, event.shiftKey);
         this.reset();
         return false;
       }

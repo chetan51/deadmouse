@@ -56,14 +56,11 @@ class Application
       this.focused_link_index = this.matched_links.length - 1
     this.update_link_focus()
     
-  follow_focused_link: (ctrlOrMetaPressed, shiftPressed) ->
-    modifiers = {}
-    if ctrlOrMetaPressed
-      modifiers =
-        metaKey: this.dom_utils.platform == "Mac"
-        ctrlKey: this.dom_utils.platform != "Mac"
-    if shiftPressed
-      modifiers.shiftKey = true
+  follow_focused_link: (ctrlPressed, metaPressed, shiftPressed) ->
+    modifiers =
+        ctrlKey: ctrlPressed
+        metaKey: metaPressed
+        shiftKey: shiftPressed
     this.dom_utils.simulateClick(this.matched_links[this.focused_link_index], modifiers)
     
   clear: ->
@@ -107,7 +104,7 @@ class Application
     else if this.activated and event.keyCode == 13 # Enter pressed
       this.clear()
 
-      this.follow_focused_link(event.ctrlKey or event.metaKey, event.shiftKey)
+      this.follow_focused_link(event.ctrlKey, event.metaKey, event.shiftKey)
 
       this.reset()
       return false
