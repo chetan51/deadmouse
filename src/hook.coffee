@@ -17,12 +17,10 @@ class DomUtils
       @platform = "Windows"
 
   simulateClick: (element, modifiers) ->
-    modifiers ||= {}
-
     eventSequence = ["mouseover", "mousedown", "mouseup", "click"]
     for event in eventSequence
       mouseEvent = document.createEvent("MouseEvents")
-      mouseEvent.initMouseEvent(event, true, true, window, 1, 0, 0, 0, 0, modifiers.ctrlKey, false, false, modifiers.metaKey, 0, null)
+      mouseEvent.initMouseEvent(event, true, true, window, 1, 0, 0, 0, 0, modifiers.ctrlKey, false, modifiers.shiftKey, modifiers.metaKey, 0, null)
       element.dispatchEvent(mouseEvent)
 
 class Application
@@ -58,17 +56,12 @@ class Application
       this.focused_link_index = this.matched_links.length - 1
     this.update_link_focus()
     
-  follow_link: (link, new_window) ->
-    if new_window
-      modifiers =
-        metaKey: this.dom_utils.platform == "Mac"
-        ctrlKey: this.dom_utils.platform != "Mac"
-    else
-      $(link).addClass("deadmouse-clicked")
-    this.dom_utils.simulateClick(link, modifiers)
-
-  follow_focused_link: (new_window) ->
-    this.follow_link(this.matched_links[this.focused_link_index], new_window)
+  follow_focused_link: (ctrlPressed, metaPressed, shiftPressed) ->
+    modifiers =
+        ctrlKey: ctrlPressed
+        metaKey: metaPressed
+        shiftKey: shiftPressed
+    this.dom_utils.simulateClick(this.matched_links[this.focused_link_index], modifiers)
     
   clear: ->
     $(link).removeClass("deadmouse-focused") for link in $("a")
@@ -111,10 +104,7 @@ class Application
     else if this.activated and event.keyCode == 13 # Enter pressed
       this.clear()
 
-      if event.shiftKey
-        this.follow_focused_link(true)
-      else
-        this.follow_focused_link(false)
+      this.follow_focused_link(event.ctrlKey, event.metaKey, event.shiftKey)
 
       this.reset()
       return false
