@@ -66,12 +66,13 @@
 
     DomUtils.prototype.simulateClick = function(element, modifiers) {
       var event, eventSequence, mouseEvent, _i, _len, _results;
+      modifiers || (modifiers = {});
       eventSequence = ["mouseover", "mousedown", "mouseup", "click"];
       _results = [];
       for (_i = 0, _len = eventSequence.length; _i < _len; _i++) {
         event = eventSequence[_i];
         mouseEvent = document.createEvent("MouseEvents");
-        mouseEvent.initMouseEvent(event, true, true, window, 1, 0, 0, 0, 0, modifiers.ctrlKey, false, modifiers.shiftKey, modifiers.metaKey, 0, null);
+        mouseEvent.initMouseEvent(event, true, true, window, 1, 0, 0, 0, 0, modifiers.ctrlKey, false, false, modifiers.metaKey, 0, null);
         _results.push(element.dispatchEvent(mouseEvent));
       }
       return _results;
@@ -123,14 +124,21 @@
       return this.update_link_focus();
     };
 
-    Application.prototype.follow_focused_link = function(ctrlPressed, metaPressed, shiftPressed) {
+    Application.prototype.follow_link = function(link, new_window) {
       var modifiers;
-      modifiers = {
-        ctrlKey: ctrlPressed,
-        metaKey: metaPressed,
-        shiftKey: shiftPressed
-      };
-      return this.dom_utils.simulateClick(this.matched_links[this.focused_link_index], modifiers);
+      if (new_window) {
+        modifiers = {
+          metaKey: this.dom_utils.platform === "Mac",
+          ctrlKey: this.dom_utils.platform !== "Mac"
+        };
+      } else {
+        $(link).addClass("deadmouse-clicked");
+      }
+      return this.dom_utils.simulateClick(link, modifiers);
+    };
+
+    Application.prototype.follow_focused_link = function(new_window) {
+      return this.follow_link(this.matched_links[this.focused_link_index], new_window);
     };
 
     Application.prototype.clear = function() {
@@ -183,7 +191,11 @@
         return false;
       } else if (this.activated && event.keyCode === 13) {
         this.clear();
-        this.follow_focused_link(event.ctrlKey, event.metaKey, event.shiftKey);
+        if (event.shiftKey) {
+          this.follow_focused_link(true);
+        } else {
+          this.follow_focused_link(false);
+        }
         this.reset();
         return false;
       }
