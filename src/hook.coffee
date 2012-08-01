@@ -17,7 +17,7 @@ class DomUtils
       @platform = "Windows"
 
   simulateClick: (element, modifiers) ->
-    eventSequence = ["mouseover", "mousedown", "mouseup", "click"]
+    eventSequence = ["click"]
     for event in eventSequence
       mouseEvent = document.createEvent("MouseEvents")
       mouseEvent.initMouseEvent(event, true, true, window, 1, 0, 0, 0, 0, modifiers.ctrlKey, false, modifiers.shiftKey, modifiers.metaKey, 0, null)
