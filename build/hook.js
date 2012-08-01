@@ -169,7 +169,7 @@
     };
 
     Application.prototype.keydown = function(event) {
-      if (event.keyCode === 27 || event.keyCode === 8 && this.activated) {
+      if ((event.keyCode === 27 || event.keyCode === 8) && this.activated) {
         this.clear();
         this.reset();
         return false;
