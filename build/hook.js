@@ -66,7 +66,7 @@
 
     DomUtils.prototype.simulateClick = function(element, modifiers) {
       var event, eventSequence, mouseEvent, _i, _len, _results;
-      eventSequence = ["mouseover", "mousedown", "mouseup", "click"];
+      eventSequence = ["click"];
       _results = [];
       for (_i = 0, _len = eventSequence.length; _i < _len; _i++) {
         event = eventSequence[_i];
