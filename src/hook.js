@@ -131,17 +131,17 @@
     };
 
     Application.prototype.not_in_blacklist = function(domain) {
-      var blacklisted;
-      return ((function() {
-        var _i, _len, _ref, _results;
-        _ref = this.options.blacklist.split(",");
-        _results = [];
-        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-          blacklisted = _ref[_i];
-          if (domain.indexOf(blacklisted) >= 0) _results.push(domain);
+      var blacklisted, in_blacklist, _i, _len, _ref;
+      in_blacklist = false;
+      _ref = this.options.blacklist.split(",");
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        blacklisted = _ref[_i];
+        if (blacklisted.length && !/^\s*$/.test(blacklisted) && domain.indexOf(blacklisted) >= 0) {
+          console.log(blacklisted);
+          in_blacklist = true;
         }
-        return _results;
-      }).call(this)).length === 0;
+      }
+      return !in_blacklist;
     };
 
     Application.prototype.clear = function() {

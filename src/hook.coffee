@@ -65,7 +65,12 @@ class Application
     this.dom_utils.simulateClick(this.matched_links[this.focused_link_index], modifiers)
 
   not_in_blacklist: (domain) ->
-    return (domain for blacklisted in this.options.blacklist.split(",") when domain.indexOf(blacklisted) >= 0).length == 0
+    in_blacklist = false
+    for blacklisted in this.options.blacklist.split(",")
+      if blacklisted.length and !/^\s*$/.test(blacklisted) and domain.indexOf(blacklisted) >= 0
+        console.log blacklisted
+        in_blacklist = true
+    return !in_blacklist
     
   clear: ->
     $(link).removeClass("deadmouse-focused") for link in $("a")
