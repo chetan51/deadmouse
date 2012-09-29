@@ -8,7 +8,7 @@ this.manifest = {
             "name": "blacklist",
             "type": "text",
             "label": "Disable DeadMouse on these domains:",
-            "text": "example: gmail.com,reader.google.com,youtube.com"
+            "text": "e.g. mail.google.com,reader.google.com,youtube.com"
         },
         {
             "tab": "General",
