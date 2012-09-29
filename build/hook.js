@@ -83,8 +83,7 @@
 
   Application = (function() {
 
-    function Application(options) {
-      this.options = options;
+    function Application() {
       this.reset();
       this.link_finder = new LinkFinder();
       this.dom_utils = new DomUtils();
@@ -137,12 +136,13 @@
     Application.prototype.not_in_blacklist = function(domain) {
       var blacklisted, in_blacklist, _i, _len, _ref;
       in_blacklist = false;
-      _ref = this.options.blacklist.split(",");
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        blacklisted = _ref[_i];
-        if (blacklisted.length && !/^\s*$/.test(blacklisted) && domain.indexOf(blacklisted) >= 0) {
-          console.log(blacklisted);
-          in_blacklist = true;
+      if (window && window.options && window.options.blacklist) {
+        _ref = window.options.blacklist.split(",");
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          blacklisted = _ref[_i];
+          if (blacklisted.length && !/^\s*$/.test(blacklisted) && domain.indexOf(blacklisted) >= 0) {
+            in_blacklist = true;
+          }
         }
       }
       return !in_blacklist;
@@ -211,18 +211,21 @@
   })();
 
   $(document).ready(function() {
-    return chrome.extension.sendRequest({
-      action: 'gpmeGetOptions'
-    }, function(options) {
-      var app;
-      app = new Application(options);
-      $(window).on("keypress", function(e) {
-        return app.keypress(event);
-      });
-      return $(window).on("keydown", function(e) {
-        return app.keydown(event);
-      });
+    var app;
+    app = new Application();
+    $(window).on("keypress", function(e) {
+      return app.keypress(event);
     });
+    $(window).on("keydown", function(e) {
+      return app.keydown(event);
+    });
+    if (chrome && chrome.extension) {
+      return chrome.extension.sendRequest({
+        action: 'gpmeGetOptions'
+      }, function(options) {
+        return window.options = options;
+      });
+    }
   });
 
 }).call(this);

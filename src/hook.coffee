@@ -24,8 +24,7 @@ class DomUtils
       element.dispatchEvent(mouseEvent)
 
 class Application
-  constructor: (options) ->
-    this.options = options
+  constructor: () ->
     this.reset()
     this.link_finder = new LinkFinder()
     this.dom_utils   = new DomUtils()
@@ -66,10 +65,12 @@ class Application
 
   not_in_blacklist: (domain) ->
     in_blacklist = false
-    for blacklisted in this.options.blacklist.split(",")
-      if blacklisted.length and !/^\s*$/.test(blacklisted) and domain.indexOf(blacklisted) >= 0
-        console.log blacklisted
-        in_blacklist = true
+
+    if window and window.options and window.options.blacklist
+      for blacklisted in window.options.blacklist.split(",")
+        if blacklisted.length and !/^\s*$/.test(blacklisted) and domain.indexOf(blacklisted) >= 0
+          in_blacklist = true
+
     return !in_blacklist
     
   clear: ->
@@ -120,11 +121,14 @@ class Application
       return false
 
 $(document).ready ->
-  chrome.extension.sendRequest {action: 'gpmeGetOptions'}, (options) ->
-    app = new Application(options)
+  app = new Application()
 
-    $(window).on "keypress", (e) ->
-      return app.keypress(event)
+  $(window).on "keypress", (e) ->
+    return app.keypress(event)
 
-    $(window).on "keydown", (e) ->
-      return app.keydown(event)
+  $(window).on "keydown", (e) ->
+    return app.keydown(event)
+
+  if chrome and chrome.extension
+    chrome.extension.sendRequest {action: 'gpmeGetOptions'}, (options) ->
+      window.options = options
