@@ -24,7 +24,8 @@ class DomUtils
       element.dispatchEvent(mouseEvent)
 
 class Application
-  constructor: ->
+  constructor: (options) ->
+    this.options = options
     this.reset()
     this.link_finder = new LinkFinder()
     this.dom_utils   = new DomUtils()
@@ -62,29 +63,33 @@ class Application
         metaKey: metaPressed
         shiftKey: shiftPressed
     this.dom_utils.simulateClick(this.matched_links[this.focused_link_index], modifiers)
+
+  not_in_blacklist: (domain) ->
+    return (domain for blacklisted in this.options.blacklist.split(",") when domain.indexOf(blacklisted) >= 0).length == 0
     
   clear: ->
     $(link).removeClass("deadmouse-focused") for link in $("a")
     $(link).removeClass("deadmouse-clicked") for link in $("a")
 
   keypress: (event) ->
-    if not this.activated and event.keyCode == 32 # Space pressed first
-      return true
-    else if document.activeElement == document.body # no input is focused
-      this.activated = true
-      this.search_string += String.fromCharCode(event.keyCode)
-      this.matched_links = this.link_finder.match(this.search_string)
+    if this.not_in_blacklist(document.location.hostname)
+      if not this.activated and event.keyCode == 32 # Space pressed first
+        return true
+      else if document.activeElement == document.body # no input is focused
+        this.activated = true
+        this.search_string += String.fromCharCode(event.keyCode)
+        this.matched_links = this.link_finder.match(this.search_string)
 
-      this.clear()
+        this.clear()
+          
+        if this.matched_links.length > 0
+          this.focus_first_link()
+        else
+          this.reset()
         
-      if this.matched_links.length > 0
-        this.focus_first_link()
+        return false
       else
-        this.reset()
-      
-      return false
-    else
-      return true
+        return true
   
   keydown: (event) ->
     if (event.keyCode == 27 or event.keyCode == 8) and this.activated # Esc or Backspace pressed
@@ -109,10 +114,12 @@ class Application
       this.reset()
       return false
 
-app = new Application()
+$(document).ready ->
+  chrome.extension.sendRequest {action: 'gpmeGetOptions'}, (options) ->
+    app = new Application(options)
 
-$(window).on "keypress", (e) ->
-  return app.keypress(event)
+    $(window).on "keypress", (e) ->
+      return app.keypress(event)
 
-$(window).on "keydown", (e) ->
-  return app.keydown(event)
+    $(window).on "keydown", (e) ->
+      return app.keydown(event)
